@@ -1,0 +1,7 @@
+site_name: gitOgit Document Site 文档站
+nav:
+    - Home: 'index.md'
+    - Usage: 'usage.md'
+    - Author: 'AUTHORS.md'
+theme:
+    name: readthedocs

@@ -1,1 +1,1 @@
-# gitOgit
+- Documentation: https://gitOgit.readthedocs.io.
