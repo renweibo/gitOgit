@@ -21,13 +21,17 @@ def prepare():
         pass
 
 
-@main.command()
+@main.command("sync")
 def repo_sync():
     prepare()
     
 
-@main.command()
-def repo_add(p=None):
+@main.command("add")
+def repo_add(p: Path = typer.Argument(..., metavar="📁DIRETORY or 📃FILE", help="需要管理的文件或目录")):
+    """
+    上手可用，进入到需要管理的目录，直接添加需要版本管理的文件或者目录即可，这些添加的文件就会放到统一的地方做好版本管理。
+
+    """
     prepare()
     if Path(p).exists():
         if str(Path(p)).startswith('/'):
@@ -54,21 +58,6 @@ def repo_add(p=None):
     else:
         typer.echo(f"{p} not found")
     
-
-@main.command()
-def repo_ci():
-    prepare()
-    
-
-
-@main.command()
-def command(args=None):
-    """Console script for gitOgit."""
-    typer.echo("Replace this message by putting your code into "
-               "gitOgit.cli.main")
-    typer.echo("See click documentation at https://click.palletsprojects.com/")
-    return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())  # pragma: no cover
