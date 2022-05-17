@@ -8,17 +8,15 @@ from shutil import copytree, copy2
 main = typer.Typer(help="Awesome CLI user manager.")
 
 
-bp = Path('.gitOgit')
-repo = Repo(bp)
-assert not repo.bare
-
-
 def prepare():
-    if not (bp/".git").exists:
+    bp = Path('.gitOgit')
+    bp.mkdir(parents=True, exist_ok=True)
+    if not (bp/".git").exists():
         Repo.init(bp)
         typer.echo("创建git仓库")
-    else:
-        pass
+    repo = Repo(bp)
+    assert not repo.bare
+    return bp, repo
 
 
 @main.command("sync")
@@ -32,28 +30,31 @@ def repo_add(p: Path = typer.Argument(..., metavar="📁DIRETORY or 📃FILE", h
     上手可用，进入到需要管理的目录，直接添加需要版本管理的文件或者目录即可，这些添加的文件就会放到统一的地方做好版本管理。
 
     """
-    prepare()
+    bp, repo = prepare()
     if Path(p).exists():
         if str(Path(p)).startswith('/'):
             typer.echo(f"{p} not relative path")
         else :
             first_add = not (bp/p).exists()
-            (bp/p).parent.mkdir(parents=True)
+            (bp/p).parent.mkdir(parents=True, exist_ok=True)
+            msg = ""
             if Path(p).is_dir():
                 if first_add:
-                    typer.echo(f"添加目录 {p}")
+                    msg = f"添加目录 {p}"
                 else:
-                    typer.echo(f"更新目录 {p}")
+                    msg = f"更新目录 {p}"
+                typer.echo(msg)
                 copytree(Path(p), bp/p, dirs_exist_ok=True)
             if Path(p).is_file():
                 if first_add:
-                    typer.echo(f"添加文件 {p}")
+                    msg = f"添加文件 {p}"
                 else:
-                    typer.echo(f"更新文件 {p}")
+                    msg = f"更新文件 {p}"
+                typer.echo(msg)
                 copy2(Path(p), bp/p)
             if first_add:
-                repo.index.add(p)
-            repo.index.commit(f"add {p} into gitOgit")
+                repo.git.add('--all')
+            repo.index.commit(msg)
             # typer.echo(repo.untracked_files)        
     else:
         typer.echo(f"{p} not found")
