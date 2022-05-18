@@ -23,6 +23,10 @@
 - 第一步，在项目代码里，添加需要本地版本管理的文件和目录，工具会区分不同的项目，分开处理，添加文件或目录均可
 - 第二部，需要的时候，在项目代码里，同步一下，针对已经添加过的文件，就可以同步（pull/push）
 
+# Configuration 配置
+
+所有需要做配置管理的文件和目录统一会放到用户的Home目录的.gitOgit下。对于linux系统或macOS系统，基本就是`$HOME/.gitOgit`； On Windows, USERPROFILE will be used if set, otherwise a combination of HOMEPATH and HOMEDRIVE will be used，不再使用HOME变量。
+
 
 # Reference 参考资料
 

@@ -8,8 +8,13 @@ from shutil import copytree, copy2
 main = typer.Typer(help="Awesome CLI user manager.")
 
 
+def get_gitOgit_home():
+    bp = Path.home()/'.gitOgit'
+    return bp
+
+
 def prepare():
-    bp = Path('.gitOgit')
+    bp = get_gitOgit_home()
     bp.mkdir(parents=True, exist_ok=True)
     if not (bp/".git").exists():
         Repo.init(bp)
