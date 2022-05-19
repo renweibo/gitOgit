@@ -3,13 +3,18 @@ from pathlib import Path
 import sys, typer
 from git import Repo
 from shutil import copytree, copy2
+from hashlib import blake2b
 
 
 main = typer.Typer(help="Awesome CLI user manager.")
+MODULE_NAME = '.gitOgit'
 
 
 def get_gitOgit_home():
-    bp = Path.home()/'.gitOgit'
+    # bp = Path.home()/MODULE_NAME
+    _, _, repo_id = get_cur_repo()
+    bp = Path.home()/MODULE_NAME/repo_id
+    print(bp)
     return bp
 
 
@@ -63,6 +68,28 @@ def repo_add(p: Path = typer.Argument(..., metavar="📁DIRETORY or 📃FILE", h
             # typer.echo(repo.untracked_files)        
     else:
         typer.echo(f"{p} not found")
+    
+
+@main.command("cur")
+def repo_cur(p: Path = typer.Argument('.', metavar="📁DIRETORY or 📃FILE", help="需要管理的文件或目录")):
+    """
+    """
+    repo = Repo(Path(p), search_parent_directories=True)
+    print(repo.remotes.origin.url)
+    h = blake2b(digest_size=20)
+    h.update(repo.remotes.origin.url.encode())
+    repo_id = h.hexdigest()
+    print(repo_id)
+    bp = Path.home()/MODULE_NAME/repo_id
+    print(bp)
+    
+    
+def get_cur_repo(p:str="."):
+    repo = Repo(Path(p), search_parent_directories=True)
+    git_root = repo.git.rev_parse("--show-toplevel")
+    h = blake2b(digest_size=20)
+    h.update(repo.remotes.origin.url.encode())
+    return repo, git_root, h.hexdigest()
     
 
 if __name__ == "__main__":
